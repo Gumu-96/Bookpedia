@@ -20,7 +20,7 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun BookImage(
-    url: String,
+    url: String?,
     modifier: Modifier = Modifier
 ) {
     Box(

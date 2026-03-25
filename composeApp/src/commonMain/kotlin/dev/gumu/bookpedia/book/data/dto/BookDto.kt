@@ -24,8 +24,7 @@ fun BookDto.toBook() = Book(
     id = id,
     title = title,
     imageUrl = coverKey?.let { "https://covers.openlibrary.org/b/olid/$it-L.jpg" }
-        ?: coverAltKey?.let { "https://covers.openlibrary.org/b/id/$it-L.jpg" }
-        ?: "",
+        ?: coverAltKey?.let { "https://covers.openlibrary.org/b/id/$it-L.jpg" },
     authors = authorNames.orEmpty(),
     description = null, // The search endpoint doesn't return a description, so this will be populated in the BookDetailDto
     languages = languages,

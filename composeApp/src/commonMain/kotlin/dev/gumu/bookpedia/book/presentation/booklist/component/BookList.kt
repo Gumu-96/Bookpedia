@@ -1,6 +1,7 @@
 package dev.gumu.bookpedia.book.presentation.booklist.component
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,6 +19,7 @@ fun BookList(
     books: List<Book>,
     onBookClick: (Book) -> Unit,
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues.Zero,
     scrollState: LazyListState = rememberLazyListState()
 ) {
     LazyColumn(
@@ -25,6 +27,7 @@ fun BookList(
         state = scrollState,
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
+        contentPadding = contentPadding
     ) {
         items(
             items = books,

@@ -3,6 +3,7 @@ package dev.gumu.bookpedia.book.presentation.booklist
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -168,7 +169,8 @@ private fun TabContainer(
                                     text = state.errorMsg.asString(),
                                     textAlign = TextAlign.Center,
                                     style = MaterialTheme.typography.headlineSmall,
-                                    color = MaterialTheme.colorScheme.error
+                                    color = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier.padding(horizontal = 16.dp)
                                 )
                             }
                             state.searchResults.isEmpty() -> {
@@ -176,15 +178,15 @@ private fun TabContainer(
                                     text = stringResource(Res.string.no_search_results),
                                     textAlign = TextAlign.Center,
                                     style = MaterialTheme.typography.headlineSmall,
-                                    color = Color.Black
+                                    color = Color.Black,
+                                    modifier = Modifier.padding(horizontal = 16.dp)
                                 )
                             }
                             else -> BookList(
                                 books = state.searchResults,
                                 onBookClick = onBookClick,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(16.dp)
+                                contentPadding = PaddingValues(16.dp),
+                                modifier = Modifier.fillMaxSize()
                             )
                         }
                         1 -> when {
@@ -193,7 +195,8 @@ private fun TabContainer(
                                     text = stringResource(Res.string.no_favorites),
                                     textAlign = TextAlign.Center,
                                     style = MaterialTheme.typography.headlineSmall,
-                                    color = Color.Black
+                                    color = Color.Black,
+                                    modifier = Modifier.padding(horizontal = 16.dp)
                                 )
                             }
                             else -> BookList(
