@@ -47,18 +47,23 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun BookListScreen(viewModel: BookListViewModel = koinViewModel()) {
+fun BookListScreen(
+    viewModel: BookListViewModel = koinViewModel(),
+    onBookClick: (Book) -> Unit
+) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     BookListScreen(
         state = state,
-        onIntent = viewModel::onIntent
+        onIntent = viewModel::onIntent,
+        onBookClick = onBookClick
     )
 }
 
 @Composable
 private fun BookListScreen(
     state: BookListState,
-    onIntent: (BookListIntent) -> Unit
+    onIntent: (BookListIntent) -> Unit,
+    onBookClick: (Book) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     Column(
@@ -79,7 +84,7 @@ private fun BookListScreen(
         )
         TabContainer(
             state = state,
-            onBookClick = { onIntent(BookListIntent.OnBookClick(it)) },
+            onBookClick = onBookClick,
             onTabClick = { onIntent(BookListIntent.OnTabClick(it)) },
             modifier = Modifier
                 .weight(1f)
@@ -223,7 +228,8 @@ private fun BookListScreenPreview() {
                 searchResults = books,
                 isLoading = false,
             ),
-            onIntent = {}
+            onIntent = {},
+            onBookClick = {}
         )
     }
 }

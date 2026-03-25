@@ -44,10 +44,6 @@ class BookListViewModel(
         _state.update { it.copy(selectedTabIndex = index) }
     }
 
-    private fun onBookClick(book: Book) {
-        // Handle book click, e.g., navigate to detail screen
-    }
-
     private fun searchBooks(query: String) = viewModelScope.launch {
         _state.update { it.copy(isLoading = true) }
         bookRepo
@@ -100,7 +96,6 @@ class BookListViewModel(
         when (intent) {
             is BookListIntent.OnSearchQueryChange -> onSearchQueryChange(intent.query)
             is BookListIntent.OnClearSearchClick -> onSearchQueryChange("")
-            is BookListIntent.OnBookClick -> onBookClick(intent.book)
             is BookListIntent.OnTabClick -> onTabClick(intent.index)
         }
     }
