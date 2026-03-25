@@ -9,6 +9,8 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.MissingFieldException
 
 suspend inline fun <reified T> safeCall(execute: () -> HttpResponse): BookpediaResult<T, DataError.Remote> {
     return try {
@@ -18,11 +20,15 @@ suspend inline fun <reified T> safeCall(execute: () -> HttpResponse): BookpediaR
         when (e) {
             is SocketTimeoutException -> BookpediaResult.Error(DataError.Remote.RequestTimeout)
             is UnresolvedAddressException -> BookpediaResult.Error(DataError.Remote.NoNetwork)
-            else -> BookpediaResult.Error(DataError.Remote.Unknown)
+            else -> {
+                e.printStackTrace()
+                BookpediaResult.Error(DataError.Remote.Unknown)
+            }
         }
     }
 }
 
+@OptIn(ExperimentalSerializationApi::class)
 suspend inline fun <reified T> responseToResult(
     response: HttpResponse
 ): BookpediaResult<T, DataError.Remote> {
@@ -31,6 +37,8 @@ suspend inline fun <reified T> responseToResult(
             try {
                 BookpediaResult.Success(response.body<T>())
             } catch (_: NoTransformationFoundException) {
+                BookpediaResult.Error(DataError.Remote.Serialization)
+            } catch (_: MissingFieldException) {
                 BookpediaResult.Error(DataError.Remote.Serialization)
             }
         }

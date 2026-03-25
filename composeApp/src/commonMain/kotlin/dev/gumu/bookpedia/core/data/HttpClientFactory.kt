@@ -18,7 +18,10 @@ object HttpClientFactory {
         return HttpClient(engine) {
             install(ContentNegotiation) {
                 json(
-                    json = Json { ignoreUnknownKeys = true }
+                    json = Json {
+                        ignoreUnknownKeys = true
+                        explicitNulls = false
+                    }
                 )
             }
             install(HttpTimeout) {
