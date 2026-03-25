@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="search_hint">Search...</string>
+    <string name="clear_hint">Clear search</string>
+    <string name="search_results">Search Results</string>
+    <string name="no_search_results">Oops, we couldn't find what you were looking for.</string>
+    <string name="favorites">Favorites</string>
+    <string name="no_favorites">You haven't saved any favorite books yet.</string>
+</resources>
