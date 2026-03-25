@@ -46,9 +46,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun BookListScreen(
-    viewModel: BookListViewModel = koinViewModel()
-) {
+fun BookListScreen(viewModel: BookListViewModel = koinViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     BookListScreen(
         state = state,
