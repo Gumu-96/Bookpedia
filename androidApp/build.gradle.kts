@@ -6,13 +6,10 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.compose.uiToolingPreview)
     implementation(libs.androidx.activity.compose)
 
     implementation(projects.composeApp)
     api(libs.koin.android)
-
-    ksp(libs.androidx.room.compiler)
 }
 
 android {
