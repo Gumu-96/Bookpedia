@@ -6,4 +6,5 @@ import dev.gumu.bookpedia.core.domain.DataError
 
 interface BookRepository {
     suspend fun searchBooks(query: String): BookpediaResult<List<Book>, DataError.Remote>
+    suspend fun getBookDetails(workId: String): BookpediaResult<String?, DataError>
 }

@@ -18,4 +18,10 @@ class DefaultBookRepository (
             .searchBooks(query)
             .map { response -> response.results.map { it.toBook() } }
     }
+
+    override suspend fun getBookDetails(workId: String): BookpediaResult<String?, DataError> {
+        return remoteBookDataSource
+            .getBookDetails(workId)
+            .map { it.description }
+    }
 }

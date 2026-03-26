@@ -1,5 +1,6 @@
 package dev.gumu.bookpedia.book.data.network
 
+import dev.gumu.bookpedia.book.data.dto.BookWorkDto
 import dev.gumu.bookpedia.book.data.dto.SearchResponseDto
 import dev.gumu.bookpedia.core.domain.BookpediaResult
 import dev.gumu.bookpedia.core.domain.DataError
@@ -10,4 +11,6 @@ interface RemoteBookDataSource {
         query: String,
         resultLimit: Int? = null
     ): BookpediaResult<SearchResponseDto, DataError.Remote>
+
+    suspend fun getBookDetails(workId: String): BookpediaResult<BookWorkDto, DataError.Remote>
 }
