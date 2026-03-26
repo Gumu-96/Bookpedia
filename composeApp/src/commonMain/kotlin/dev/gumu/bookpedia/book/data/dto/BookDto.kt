@@ -21,7 +21,7 @@ data class BookDto(
 )
 
 fun BookDto.toBook() = Book(
-    id = id,
+    id = id.substringAfterLast("/"),
     title = title,
     imageUrl = coverKey?.let { "https://covers.openlibrary.org/b/olid/$it-L.jpg" }
         ?: coverAltKey?.let { "https://covers.openlibrary.org/b/id/$it-L.jpg" },

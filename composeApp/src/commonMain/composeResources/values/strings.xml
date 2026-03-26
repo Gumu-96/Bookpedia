@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <resources>
+    <!-- Book List -->
     <string name="search_hint">Search...</string>
     <string name="clear_hint">Clear search</string>
     <string name="search_results">Search Results</string>
     <string name="no_search_results">Oops, nothing to see here</string>
     <string name="favorites">Favorites</string>
     <string name="no_favorites">You haven't saved any favorite books yet</string>
+
+    <!-- Book Details -->
+    <string name="go_back">Go back</string>
+    <string name="mark_as_favorite">Mark as favorite</string>
+    <string name="remove_from_favorites">Remove from favorites</string>
+    <string name="rating">Rating</string>
+    <string name="pages">Pages</string>
+    <string name="languages">Languages</string>
+    <string name="synopsis">Synopsis</string>
+    <string name="description_unavailable">Description unavailable</string>
 
     <!-- Errors -->
     <string name="error_disk_full">Oops, it seems like your disk is full</string>
