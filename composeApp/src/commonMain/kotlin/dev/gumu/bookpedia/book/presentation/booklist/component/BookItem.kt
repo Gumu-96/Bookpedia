@@ -87,7 +87,7 @@ private fun BookInfo(
         )
         if (book.authors.isNotEmpty()) {
             Text(
-                text = book.authors.joinToString(", "),
+                text = book.authors.joinToString(),
                 style = MaterialTheme.typography.bodyMedium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
