@@ -1,5 +1,6 @@
 package dev.gumu.bookpedia.book.data.database
 
+import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -12,6 +13,7 @@ import dev.gumu.bookpedia.book.data.database.entity.StringListTypeConverter
     exportSchema = false
 )
 @TypeConverters(StringListTypeConverter::class)
+@ConstructedBy(BookDatabaseConstructor::class)
 abstract class BookDatabase : RoomDatabase() {
     abstract val favoriteBookDao: FavoriteBookDao
 
