@@ -1,7 +1,6 @@
 package dev.gumu.bookpedia.book.presentation.booklist.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -24,6 +23,9 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.ImeAction
 import bookpedia.composeapp.generated.resources.clear_hint
 import dev.gumu.bookpedia.core.presentation.DesertWhite
@@ -37,6 +39,7 @@ fun BookSearchBar(
     onImeSearch: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val focusRequester = remember { FocusRequester() }
     CompositionLocalProvider(
         LocalTextSelectionColors provides TextSelectionColors(
             handleColor = SandYellow,
@@ -53,9 +56,7 @@ fun BookSearchBar(
             ),
             singleLine = true,
             placeholder = {
-                Text(
-                    text = stringResource(Res.string.search_hint)
-                )
+                Text(text = stringResource(Res.string.search_hint))
             },
             leadingIcon = {
                 Icon(
@@ -72,7 +73,10 @@ fun BookSearchBar(
             trailingIcon = if (query.isNotBlank()) {
                 {
                     IconButton(
-                        onClick = onClearClick
+                        onClick = {
+                            onClearClick()
+                            focusRequester.requestFocus()
+                        }
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
@@ -81,10 +85,12 @@ fun BookSearchBar(
                     }
                 }
             } else null,
-            modifier = modifier.background(
-                color = DesertWhite,
-                shape = CircleShape
-            ),
+            modifier = modifier
+                .background(
+                    color = DesertWhite,
+                    shape = CircleShape
+                )
+                .focusRequester(focusRequester)
         )
     }
 }

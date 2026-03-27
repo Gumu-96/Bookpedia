@@ -7,17 +7,10 @@ import dev.gumu.bookpedia.book.domain.repository.BookRepository
 import dev.gumu.bookpedia.core.domain.onError
 import dev.gumu.bookpedia.core.domain.onSuccess
 import dev.gumu.bookpedia.core.presentation.toUiText
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -27,7 +20,6 @@ class BookListViewModel(
 ) : ViewModel() {
     private val _state = MutableStateFlow(BookListState())
     val state = _state
-        .onStart { if (cachedBooks.isEmpty()) observeSearchQuery() }
         .combine(bookRepo.getFavoriteBooks()) { state, favorites ->
             state.copy(favoriteBooks = favorites)
         }
@@ -49,7 +41,12 @@ class BookListViewModel(
     }
 
     private fun searchBooks(query: String) = viewModelScope.launch {
-        _state.update { it.copy(isLoading = true) }
+        _state.update {
+            it.copy(
+                isLoading = true,
+                selectedTabIndex = 0
+            )
+        }
         bookRepo
             .searchBooks(query)
             .onSuccess { results ->
@@ -73,27 +70,19 @@ class BookListViewModel(
             }
     }
 
-    @OptIn(FlowPreview::class)
-    private fun observeSearchQuery() {
-        state
-            .map { it.searchQuery }
-            .distinctUntilChanged()
-            .debounce(500L)
-            .onEach { query ->
-                when {
-                    query.isBlank() -> _state.update {
-                        it.copy(
-                            searchResults = cachedBooks,
-                            errorMsg = null
-                        )
-                    }
-                    query.length > 2 -> {
-                        searchJob?.cancel()
-                        searchJob = searchBooks(query)
-                    }
-                }
+    private fun onPerformSearch(query: String) {
+        when {
+            query.isBlank() -> _state.update {
+                it.copy(
+                    searchResults = cachedBooks,
+                    errorMsg = null
+                )
             }
-            .launchIn(viewModelScope)
+            query.length > 2 -> {
+                searchJob?.cancel()
+                searchJob = searchBooks(query)
+            }
+        }
     }
 
     fun onIntent(intent: BookListIntent) {
@@ -101,6 +90,7 @@ class BookListViewModel(
             is BookListIntent.OnSearchQueryChange -> onSearchQueryChange(intent.query)
             is BookListIntent.OnClearSearchClick -> onSearchQueryChange("")
             is BookListIntent.OnTabClick -> onTabClick(intent.index)
+            is BookListIntent.OnPerformSearch -> onPerformSearch(intent.query)
         }
     }
 }

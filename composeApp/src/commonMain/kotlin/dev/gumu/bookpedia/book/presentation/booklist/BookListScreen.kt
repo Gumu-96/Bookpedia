@@ -76,7 +76,10 @@ private fun BookListScreen(
             query = state.searchQuery,
             onQueryChange = { onIntent(BookListIntent.OnSearchQueryChange(it)) },
             onClearClick = { onIntent(BookListIntent.OnClearSearchClick) },
-            onImeSearch = { focusManager.clearFocus() },
+            onImeSearch = {
+                focusManager.clearFocus()
+                onIntent(BookListIntent.OnPerformSearch(state.searchQuery))
+            },
             modifier = Modifier
                 .widthIn(max = 400.dp)
                 .fillMaxWidth()
