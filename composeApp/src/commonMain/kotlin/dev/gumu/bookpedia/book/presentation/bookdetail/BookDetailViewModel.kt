@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dev.gumu.bookpedia.app.BookGraph
+import dev.gumu.bookpedia.app.BookpediaNavType
 import dev.gumu.bookpedia.book.domain.Book
 import dev.gumu.bookpedia.book.domain.repository.BookRepository
 import dev.gumu.bookpedia.core.domain.onError
@@ -12,25 +13,30 @@ import dev.gumu.bookpedia.core.domain.onSuccess
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.reflect.typeOf
 
 class BookDetailViewModel(
     private val bookRepo: BookRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val args = savedStateHandle.toRoute<BookGraph.BookDetails>()
+    private val args = savedStateHandle.toRoute<BookGraph.BookDetails>(
+        typeMap = mapOf(typeOf<Book>() to BookpediaNavType.BookType)
+    )
 
-    private val _state = MutableStateFlow(BookDetailState())
+    private val _state = MutableStateFlow(BookDetailState(book = args.book))
     val state = _state
-        .combine(bookRepo.bookIsFavorite(args.id)) { state, favorite ->
+        .onStart { fetchBookDescription(args.book.id) }
+        .combine(bookRepo.bookIsFavorite(args.book.id)) { state, favorite ->
             state.copy(favorite = favorite)
         }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),
-            initialValue = BookDetailState()
+            initialValue = _state.value
         )
 
     private fun fetchBookDescription(workId: String) {
@@ -55,7 +61,7 @@ class BookDetailViewModel(
     private fun onFavoriteClick() {
         viewModelScope.launch {
             if (state.value.favorite) {
-                bookRepo.deleteFavorite(args.id)
+                bookRepo.deleteFavorite(args.book.id)
             } else {
                 state.value.book?.let { book ->
                     bookRepo.addFavorite(book)
@@ -64,15 +70,9 @@ class BookDetailViewModel(
         }
     }
 
-    private fun onSelectedBookChange(book: Book) {
-        _state.update { it.copy(book = book) }
-        fetchBookDescription(book.id)
-    }
-
     fun onIntent(intent: BookDetailIntent) {
         when (intent) {
             is BookDetailIntent.OnFavoriteClick -> onFavoriteClick()
-            is BookDetailIntent.OnSelectedBookChange -> onSelectedBookChange(intent.book)
         }
     }
 }

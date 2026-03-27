@@ -7,7 +7,6 @@ import dev.gumu.bookpedia.book.data.network.KtorRemoteBookDataSource
 import dev.gumu.bookpedia.book.data.network.RemoteBookDataSource
 import dev.gumu.bookpedia.book.data.repository.DefaultBookRepository
 import dev.gumu.bookpedia.book.domain.repository.BookRepository
-import dev.gumu.bookpedia.book.presentation.SelectedBookViewModel
 import dev.gumu.bookpedia.book.presentation.bookdetail.BookDetailViewModel
 import dev.gumu.bookpedia.book.presentation.booklist.BookListViewModel
 import dev.gumu.bookpedia.core.data.HttpClientFactory
@@ -33,6 +32,5 @@ val sharedModule = module {
     single { get<BookDatabase>().favoriteBookDao }
 
     viewModelOf(::BookListViewModel)
-    viewModelOf(::SelectedBookViewModel)
     viewModelOf(::BookDetailViewModel)
 }

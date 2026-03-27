@@ -2,23 +2,19 @@ package dev.gumu.bookpedia.app
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import dev.gumu.bookpedia.book.presentation.SelectedBookViewModel
-import dev.gumu.bookpedia.book.presentation.bookdetail.BookDetailIntent
+import dev.gumu.bookpedia.book.domain.Book
 import dev.gumu.bookpedia.book.presentation.bookdetail.BookDetailScreen
-import dev.gumu.bookpedia.book.presentation.bookdetail.BookDetailViewModel
 import dev.gumu.bookpedia.book.presentation.booklist.BookListScreen
 import org.koin.compose.viewmodel.koinViewModel
+import kotlin.reflect.typeOf
 
 @Composable
 fun App() {
@@ -31,30 +27,17 @@ fun App() {
             navigation<BookGraph.Graph>(
                 startDestination = BookGraph.BookList
             ) {
-                composable<BookGraph.BookList> { entry ->
-                    val selectedBookViewModel = entry.sharedKoinViewModel<SelectedBookViewModel>(navController)
-
-                    LaunchedEffect(Unit) {
-                        selectedBookViewModel.onSelectBook(null)
-                    }
+                composable<BookGraph.BookList> {
                     BookListScreen(
                         onBookClick = {
-                            selectedBookViewModel.onSelectBook(it)
-                            navController.navigate(BookGraph.BookDetails(it.id))
+                            navController.navigate(BookGraph.BookDetails(it))
                         }
                     )
                 }
-                composable<BookGraph.BookDetails> {
-                    val viewModel = koinViewModel<BookDetailViewModel>()
-                    val selectedBookViewModel = it.sharedKoinViewModel<SelectedBookViewModel>(navController)
-                    val selectedBook by selectedBookViewModel.selectedBook.collectAsStateWithLifecycle()
-                    LaunchedEffect(selectedBook) {
-                        selectedBook?.let { book ->
-                            viewModel.onIntent(BookDetailIntent.OnSelectedBookChange(book))
-                        }
-                    }
+                composable<BookGraph.BookDetails>(
+                    typeMap = mapOf(typeOf<Book>() to BookpediaNavType.BookType)
+                ) {
                     BookDetailScreen(
-                        viewModel = viewModel,
                         onBackClick = { navController.navigateUp() }
                     )
                 }
@@ -63,6 +46,10 @@ fun App() {
     }
 }
 
+/**
+ * Helper fun to scope a viewModel instance to a navigation graph
+ */
+@Suppress("unused")
 @Composable
 private inline fun <reified T : ViewModel> NavBackStackEntry.sharedKoinViewModel(
     navController: NavController

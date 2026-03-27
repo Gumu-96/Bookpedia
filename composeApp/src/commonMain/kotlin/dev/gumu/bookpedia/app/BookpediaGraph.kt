@@ -1,5 +1,6 @@
 package dev.gumu.bookpedia.app
 
+import dev.gumu.bookpedia.book.domain.Book
 import kotlinx.serialization.Serializable
 
 sealed interface Route
@@ -12,5 +13,5 @@ sealed interface BookGraph : Route {
     data object BookList : BookGraph
 
     @Serializable
-    data class BookDetails(val id: String) : BookGraph
+    data class BookDetails(val book: Book) : BookGraph
 }
